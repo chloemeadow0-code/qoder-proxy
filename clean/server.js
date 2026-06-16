@@ -2,7 +2,7 @@ const { createApp } = require('./app');
 const { log } = require('./logger');
 const { getCliBackend } = require('./qodercn-cli');
 
-const HOST = '127.0.0.1';
+const HOST = process.env.HOST || '127.0.0.1';
 const PORT = Number(process.env.PORT || 3000);
 
 const app = createApp();
