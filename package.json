@@ -17,6 +17,7 @@
     ".env.example"
   ],
   "scripts": {
+    "postinstall": "npm install -g @qodercn-ai/qoderclicn",
     "start": "node clean/server.js",
     "dev": "node clean/server.js",
     "test": "node --test",
