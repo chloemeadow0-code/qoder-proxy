@@ -8,31 +8,33 @@ class AppError extends Error {
   }
 }
 
+// 报错脱敏：吃掉所有详细错误信息，客户端只看到状态码
 function openAiError(res, error) {
   const status = error.status || 500;
-  const code = error.code || 'internal_error';
-  const type = error.type || (status >= 500 ? 'server_error' : 'invalid_request_error');
-  const message = error.publicMessage || error.message || 'Internal server error';
+
+  // 完整错误只打日志，自己排查用
+  console.error(`[报错脱敏] ${status} ${error.code || ''} ${error.message || ''}`);
 
   return res.status(status).json({
     error: {
-      message,
-      type,
-      code,
+      message: `${status}`,
+      type: 'upstream_error',
+      code: status,
     },
   });
 }
 
+// 报错脱敏：Anthropic 格式同样只返回状态码
 function anthropicError(res, error) {
   const status = error.status || 500;
-  const type = error.type || (status >= 500 ? 'api_error' : 'invalid_request_error');
-  const message = error.publicMessage || error.message || 'Internal server error';
+
+  console.error(`[报错脱敏] ${status} ${error.code || ''} ${error.message || ''}`);
 
   return res.status(status).json({
     type: 'error',
     error: {
-      type,
-      message,
+      type: 'upstream_error',
+      message: `${status}`,
     },
   });
 }
